@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hug Timer — How Long Should Your Hug Last? | Random Hug Generator</title>
+  <meta name="description" content="How long should your hug last? Let the app decide! From a quick side-hug to a long healing bear hug. Perfect for couples, friends, and family. Share with someone who needs a hug!">
+  <meta name="keywords" content="hug timer, how long to hug, hug duration, bear hug generator, hug app, free hug timer">
+  <link rel="canonical" href="https://hugtimer.quicktools.io">
+  <style>
+    :root{--bg:#0a0f0a;--bg2:#0f1a0f;--bg3:#162416;--border:#1f3d1f;--accent:#4ade80;--accent2:#16a34a;--warm:#f59e0b;--blue:#60a5fa;--text:#e0f0e0;--text-dim:#7aad7a;--white:#f0fff0;}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden;}
+    .topnav{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 24px;height:56px;display:flex;align-items:center;}
+    .nav-logo{font-size:16px;font-weight:700;color:var(--accent);text-decoration:none;}
+    .ad-banner{background:var(--bg2);border-bottom:1px solid var(--border);padding:8px;text-align:center;min-height:90px;display:flex;align-items:center;justify-content:center;color:var(--text-dim);font-size:12px;}
+    .hero{text-align:center;padding:40px 16px 20px;}
+    .hero h1{font-size:clamp(32px,6vw,56px);font-weight:900;background:linear-gradient(135deg,#4ade80,#f59e0b,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:10px;}
+    .hero p{font-size:16px;color:var(--text-dim);max-width:480px;margin:0 auto;}
+    .main{flex:1;display:flex;flex-direction:column;align-items:center;padding:20px 16px 40px;}
+
+    /* HUG TYPE */
+    .type-row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:28px;}
+    .type-btn{padding:10px 18px;border-radius:24px;border:2px solid var(--border);background:var(--bg3);color:var(--text-dim);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit;}
+    .type-btn:hover{border-color:var(--accent);color:var(--accent);}
+    .type-btn.active{background:rgba(74,222,128,.15);border-color:var(--accent);color:var(--accent);}
+
+    /* RESULT CARD */
+    .result-card{background:linear-gradient(135deg,var(--bg2),var(--bg3));border:2px solid var(--border);border-radius:24px;padding:40px 32px;text-align:center;width:100%;max-width:480px;margin-bottom:24px;transition:all .4s;}
+    .result-card.revealed{border-color:var(--accent);box-shadow:0 0 40px rgba(74,222,128,.15);}
+
+    .hug-emoji{font-size:80px;margin-bottom:16px;display:block;}
+    .hug-emoji.animate{animation:hugPop .6s cubic-bezier(.4,0,.2,1);}
+    @keyframes hugPop{0%{transform:scale(.3);opacity:0}60%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+
+    .duration-display{font-size:clamp(48px,12vw,88px);font-weight:900;color:var(--white);line-height:1;}
+    .duration-unit{font-size:20px;color:var(--accent);font-weight:700;margin-bottom:16px;margin-top:4px;}
+    .hug-type{font-size:22px;font-weight:800;color:var(--warm);margin-bottom:8px;}
+    .hug-desc{font-size:15px;color:var(--text-dim);line-height:1.6;max-width:320px;margin:0 auto;}
+    .health-fact{margin-top:16px;padding:10px 16px;background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.2);border-radius:8px;font-size:13px;color:var(--accent);line-height:1.5;}
+
+    /* TIMER */
+    .timer-section{margin-top:20px;padding-top:20px;border-top:1px solid var(--border);display:none;}
+    .timer-section.show{display:block;}
+    .timer-display{font-size:56px;font-weight:900;color:var(--accent);font-variant-numeric:tabular-nums;}
+    .timer-bar{width:100%;height:10px;background:var(--bg3);border-radius:5px;margin:12px 0;overflow:hidden;}
+    .timer-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--accent),var(--warm));transition:width .1s linear;}
+    .timer-status{font-size:14px;color:var(--text-dim);}
+    .timer-pulse{display:inline-block;width:12px;height:12px;border-radius:50%;background:var(--accent);animation:timerPulse 1s infinite;}
+    @keyframes timerPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.4)}}
+
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:16px 36px;border-radius:50px;border:none;font-size:17px;font-weight:800;cursor:pointer;transition:all .2s;font-family:inherit;}
+    .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000;box-shadow:0 4px 20px rgba(74,222,128,.3);}
+    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(74,222,128,.4);}
+    .btn-secondary{background:var(--bg3);color:var(--text);border:2px solid var(--border);}
+    .btn-secondary:hover{border-color:var(--accent);}
+    .btn-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:4px;}
+
+    /* SCIENCE FACTS */
+    .facts-bar{width:100%;max-width:480px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px 18px;margin:16px 0;text-align:center;font-size:13px;color:var(--text-dim);line-height:1.5;}
+
+    .history{width:100%;max-width:480px;margin-top:16px;}
+    .history-title{font-size:12px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;text-align:center;}
+    .history-chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;}
+    .history-chip{padding:5px 14px;border-radius:20px;background:var(--bg3);border:1px solid var(--border);font-size:12px;color:var(--text-dim);}
+
+    .hug-particle{position:fixed;pointer-events:none;font-size:22px;animation:hugFloat 1.4s ease-out forwards;}
+    @keyframes hugFloat{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-130px) scale(0) rotate(15deg)}}
+
+    .ad-mid{text-align:center;margin:20px auto;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px;min-height:90px;display:flex;align-items:center;justify-content:center;color:var(--text-dim);font-size:12px;width:100%;max-width:480px;}
+    .faq-section{width:100%;max-width:700px;padding:0 16px 40px;}
+    .faq h2{font-size:20px;font-weight:700;color:var(--white);margin-bottom:16px;text-align:center;}
+    .faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px 20px;margin-bottom:8px;}
+    .faq-q{font-weight:600;color:var(--white);margin-bottom:6px;}
+    .faq-a{color:var(--text-dim);font-size:14px;line-height:1.6;}
+    footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px;text-align:center;color:var(--text-dim);font-size:13px;}
+    footer a{color:var(--text-dim);text-decoration:none;margin:0 8px;}
+    .toast{position:fixed;bottom:24px;right:24px;background:var(--accent);color:#000;padding:10px 20px;border-radius:8px;font-size:14px;font-weight:700;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none;z-index:999;}
+    .toast.show{opacity:1;transform:translateY(0);}
+  </style>
+</head>
+<body>
+<nav class="topnav"><a href="/" class="nav-logo">🤗 QuickTools</a></nav>
+<div class="ad-banner">[Ad — 728x90]</div>
+
+<div class="hero">
+  <h1>🤗 Hug Timer</h1>
+  <p>Science says hugs heal. Let the app decide how long yours should last. No backing out.</p>
+</div>
+
+<div class="main">
+  <div class="type-row">
+    <button class="type-btn active" onclick="setType('any',this)">🎲 Surprise Me</button>
+    <button class="type-btn" onclick="setType('quick',this)">👋 Quick Hug</button>
+    <button class="type-btn" onclick="setType('friend',this)">😊 Friend Hug</button>
+    <button class="type-btn" onclick="setType('healing',this)">💚 Healing Hug</button>
+    <button class="type-btn" onclick="setType('bear',this)">🐻 Bear Hug</button>
+    <button class="type-btn" onclick="setType('epic',this)">🏆 Epic Hug</button>
+  </div>
+
+  <div class="facts-bar" id="science-fact">
+    Did you know? A hug lasting at least 20 seconds releases oxytocin — the bonding hormone. 🧠
+  </div>
+
+  <div class="result-card" id="result-card">
+    <span class="hug-emoji" id="hug-emoji">🤗</span>
+    <div class="duration-display" id="duration-display">?</div>
+    <div class="duration-unit" id="duration-unit">seconds</div>
+    <div class="hug-type" id="hug-type">Ready for a hug?</div>
+    <div class="hug-desc" id="hug-desc">Tap the button below and find out exactly how long your hug should last!</div>
+    <div class="health-fact" id="health-fact" style="display:none"></div>
+
+    <div class="timer-section" id="timer-section">
+      <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:8px;">
+        <div class="timer-pulse" id="timer-pulse" style="display:none"></div>
+        <div class="timer-display" id="timer-display">0.0</div>
+      </div>
+      <div class="timer-bar"><div class="timer-fill" id="timer-fill" style="width:0%"></div></div>
+      <div class="timer-status" id="timer-status">Get ready...</div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="generate()">🤗 Generate Hug</button>
+    <button class="btn btn-secondary" onclick="startTimer()" id="timer-btn" style="display:none">▶ Start Timer</button>
+  </div>
+  <div class="btn-row" style="margin-top:12px;">
+    <button class="btn btn-secondary" style="padding:10px 20px;font-size:14px;" onclick="shareResult()">📤 Share</button>
+    <button class="btn btn-secondary" style="padding:10px 20px;font-size:14px;" onclick="generate()">🔀 Again</button>
+  </div>
+
+  <div class="history" id="history-wrap" style="display:none">
+    <div class="history-title">Recent Hugs</div>
+    <div class="history-chips" id="history-chips"></div>
+  </div>
+
+  <div class="ad-mid">[Ad — 728x90]</div>
+
+  <div class="faq-section">
+    <div class="faq">
+      <h2>Frequently Asked Questions</h2>
+      <div class="faq-item"><div class="faq-q">How long should a hug last for health benefits?</div><div class="faq-a">Research by Dr. Jan Astrom suggests hugs lasting 20 seconds or more trigger the release of oxytocin, the bonding hormone. This can reduce stress, lower blood pressure, and improve mood. Even a 10-second hug can have measurable benefits.</div></div>
+      <div class="faq-item"><div class="faq-q">What is a bear hug?</div><div class="faq-a">A bear hug is a very firm, full-body embrace where both arms wrap tightly around the other person, often lifting them slightly. It conveys deep affection, warmth, and security. The name comes from how bears are perceived to embrace their cubs.</div></div>
+      <div class="faq-item"><div class="faq-q">How many hugs do we need per day?</div><div class="faq-a">Family therapist Virginia Satir famously said: "We need 4 hugs a day for survival. We need 8 hugs a day for maintenance. We need 12 hugs a day for growth." Most people fall well short of this — which is exactly why this app exists.</div></div>
+      <div class="faq-item"><div class="faq-q">Can I use this for a friendly hug, not just romantic?</div><div class="faq-a">Absolutely. Hugs are for everyone — partners, friends, family, pets. Select "Friend Hug" or "Quick Hug" mode for a platonic embrace. All hug types are welcome here.</div></div>
+    </div>
+  </div>
+</div>
+
+<footer>© 2025 QuickTools — Free Online Utilities<br><div style="margin-top:8px;"><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/tools">All Tools</a></div></footer>
+<div class="toast" id="toast"></div>
+
+<script>
+const HUGS = {
+  quick:   [
+    {dur:2,unit:'seconds',type:'Side Hug',emoji:'🙂',desc:'The classic hallway side hug. Better than nothing.',fact:'Even brief physical contact can reduce cortisol levels.'},
+    {dur:3,unit:'seconds',type:'Quick Squeeze',emoji:'😊',desc:'A brief but genuine squeeze. You mean it.',fact:'Touch activates the brain\'s reward centers instantly.'},
+    {dur:5,unit:'seconds',type:'Hello Hug',emoji:'👋',desc:'The standard greeting hug. Respectable.',fact:'5 seconds is enough to trigger a mild oxytocin response.'},
+  ],
+  friend:  [
+    {dur:8,unit:'seconds',type:'Friend Hug',emoji:'😄',desc:'Long enough to actually feel it. This is a real hug.',fact:'8-second hugs significantly boost serotonin levels.'},
+    {dur:10,unit:'seconds',type:'Good Friend Hug',emoji:'🙏',desc:'A proper hug between two people who actually care.',fact:'10 seconds can reduce feelings of social isolation.'},
+    {dur:15,unit:'seconds',type:'Best Friend Hug',emoji:'🤝',desc:'Reserved for the people who really matter. No awkwardness.',fact:'Physical contact for 15+ seconds lowers heart rate.'},
+  ],
+  healing: [
+    {dur:20,unit:'seconds',type:'Healing Hug',emoji:'💚',desc:'20 seconds. This is the science-backed magic number.',fact:'Dr. Jan Astrom: 20 seconds releases oxytocin, the bonding hormone.'},
+    {dur:30,unit:'seconds',type:'Comfort Hug',emoji:'🌿',desc:'For when someone really needs it. Hold on.',fact:'30-second hugs can lower blood pressure measurably.'},
+    {dur:45,unit:'seconds',type:'Deep Healing Hug',emoji:'✨',desc:'Nearly a minute of pure human connection. Rare and precious.',fact:'Extended hugs activate the vagus nerve, calming the nervous system.'},
+  ],
+  bear:    [
+    {dur:60,unit:'seconds',type:'Bear Hug',emoji:'🐻',desc:'One full minute. Both arms, full squeeze. Own it.',fact:'A full minute of close contact syncs heartbeats between two people.'},
+    {dur:90,unit:'seconds',type:'Grizzly Bear Hug',emoji:'🐾',desc:'Ninety seconds. Committed. Powerful. No holding back.',fact:'90-second hugs are linked to improved immune function.'},
+    {dur:120,unit:'seconds',type:'Epic Bear Hug',emoji:'💪',desc:'Two full minutes. This is now a lifestyle choice.',fact:'2 minutes of sustained contact creates lasting emotional bonds.'},
+  ],
+  epic:    [
+    {dur:180,unit:'seconds',type:'Legendary Hug',emoji:'👑',desc:'Three full minutes. People will talk about this.',fact:'Sustained contact releases a cascade of bonding neurochemicals.'},
+    {dur:300,unit:'seconds',type:'Historical Hug',emoji:'🏆',desc:'Five minutes. This will be remembered forever.',fact:'5-minute hugs have been shown to reduce anxiety for hours afterward.'},
+    {dur:600,unit:'seconds',type:'World Record Attempt',emoji:'🌍',desc:'10 minutes. Are you both okay? Do you need snacks?',fact:'The world record hug lasted over 24 hours. You\'re just warming up.'},
+  ],
+};
+const ALL = Object.values(HUGS).flat();
+const SCIENCE_FACTS = [
+  'A 20-second hug releases oxytocin — the bonding hormone. 🧠',
+  'Hugging lowers cortisol (stress hormone) by up to 23%. 💚',
+  'Physical touch syncs heartbeats between huggers. 💓',
+  'We need 12 hugs a day for growth — Virginia Satir.',
+  'Hugging activates the vagus nerve, calming your nervous system.',
+  'A warm hug can lower blood pressure in minutes. ❤️',
+  'Skin-to-skin contact boosts serotonin and dopamine. 😊',
+  'Children who receive more hugs develop stronger immune systems.',
+];
+
+let currentType = 'any';
+let currentResult = null;
+let timerInterval = null;
+let history = [];
+
+function setType(type, btn) {
+  currentType = type;
+  document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  rotateFact();
+}
+
+function rotateFact() {
+  const f = SCIENCE_FACTS[Math.floor(Math.random() * SCIENCE_FACTS.length)];
+  document.getElementById('science-fact').textContent = f;
+}
+
+function generate() {
+  stopTimer();
+  const pool = currentType === 'any' ? ALL : (HUGS[currentType] || ALL);
+  currentResult = pool[Math.floor(Math.random() * pool.length)];
+  const r = currentResult;
+
+  document.getElementById('result-card').classList.add('revealed');
+  const emoji = document.getElementById('hug-emoji');
+  emoji.textContent = r.emoji;
+  emoji.classList.remove('animate');
+  void emoji.offsetWidth;
+  emoji.classList.add('animate');
+
+  document.getElementById('duration-display').textContent = r.dur >= 60 ? Math.floor(r.dur/60) : r.dur;
+  document.getElementById('duration-unit').textContent = r.dur >= 60 ? (r.dur >= 120 ? `minutes` : `minute`) : r.unit;
+  document.getElementById('hug-type').textContent = r.type;
+  document.getElementById('hug-desc').textContent = r.desc;
+
+  const factEl = document.getElementById('health-fact');
+  factEl.style.display = 'block';
+  factEl.textContent = '🧠 ' + r.fact;
+
+  document.getElementById('timer-section').classList.remove('show');
+  document.getElementById('timer-btn').style.display = 'inline-flex';
+  document.getElementById('timer-display').textContent = r.dur >= 60 ? (r.dur/60).toFixed(1) : r.dur + '.0';
+  document.getElementById('timer-fill').style.width = '0%';
+
+  history.unshift(`${r.type} (${r.dur >= 60 ? (r.dur/60)+'min' : r.dur+'s'})`);
+  if (history.length > 8) history.pop();
+  document.getElementById('history-wrap').style.display = 'block';
+  document.getElementById('history-chips').innerHTML = history.map(h =>
+    `<span class="history-chip">${h}</span>`).join('');
+
+  spawnHugs();
+  rotateFact();
+}
+
+function startTimer() {
+  if (!currentResult) return;
+  const total = currentResult.dur * 10;
+  let remaining = total;
+  document.getElementById('timer-section').classList.add('show');
+  document.getElementById('timer-btn').style.display = 'none';
+  document.getElementById('timer-pulse').style.display = 'inline-block';
+  document.getElementById('timer-status').textContent = 'Hugging...';
+  stopTimer();
+  timerInterval = setInterval(() => {
+    remaining--;
+    const val = remaining / 10;
+    const display = currentResult.dur >= 60
+      ? (val / 60).toFixed(1) + ' min'
+      : val.toFixed(1) + 's';
+    document.getElementById('timer-display').textContent = val >= 60 ? (val/60).toFixed(1) : val.toFixed(1);
+    document.getElementById('timer-fill').style.width = ((total - remaining) / total * 100) + '%';
+    if (remaining <= 0) {
+      stopTimer();
+      document.getElementById('timer-status').textContent = 'Hug complete! You did it! 🤗';
+      document.getElementById('timer-pulse').style.display = 'none';
+      document.getElementById('timer-fill').style.width = '100%';
+      spawnHugs();
+    }
+  }, 100);
+}
+
+function stopTimer() {
+  if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+}
+
+function spawnHugs() {
+  const emojis = ['🤗','💚','✨','🌿','💛','🧡'];
+  for (let i = 0; i < 10; i++) {
+    setTimeout(() => {
+      const h = document.createElement('div');
+      h.className = 'hug-particle';
+      h.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      h.style.cssText = `left:${Math.random()*window.innerWidth}px;top:${window.innerHeight*0.45}px;`;
+      document.body.appendChild(h);
+      setTimeout(() => h.remove(), 1400);
+    }, i * 100);
+  }
+}
+
+function shareResult() {
+  if (!currentResult) return;
+  const dur = currentResult.dur >= 60 ? (currentResult.dur/60) + ' minute' : currentResult.dur + ' second';
+  const text = `The Hug Timer says I need a ${currentResult.type} — ${dur} hug! 🤗 Who do you need to hug today? Try it:`;
+  navigator.clipboard.writeText(text).then(() => showToast('Copied! Go hug someone 🤗'));
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+generate();
+</script>
+</body>
+</html>
